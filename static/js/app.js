@@ -1,4 +1,4 @@
-// app.js
+console.log('app.js loaded');
 
 const routes = {
     '/': 'login',
@@ -9,12 +9,14 @@ const routes = {
 };
 
 function navigateTo(path) {
+    console.log(`Navigating to: ${path}`);
     window.history.pushState({}, path, window.location.origin + path);
     updateRoute();
 }
 
 function updateRoute() {
     const path = window.location.pathname;
+    console.log(`Updating route for path: ${path}`);
     const route = routes[path] || 'login';
     loadComponent(route);
 }
@@ -22,29 +24,37 @@ function updateRoute() {
 window.addEventListener('popstate', updateRoute);
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded event fired');
     document.body.addEventListener('click', e => {
         if (e.target.matches('[data-link]')) {
             e.preventDefault();
+            console.log('Navigation link clicked:', e.target.href);
             navigateTo(e.target.getAttribute('href'));
         }
     });
 
     const token = localStorage.getItem('token');
     if (token) {
+        console.log('Token found, navigating to home');
         navigateTo('/home');
     } else {
+        console.log('No token found, updating route');
         updateRoute();
     }
 });
 
 function loadComponent(componentName) {
+    console.log(`Loading component: ${componentName}`);
     fetch(`/static/html/${componentName}.html`)
         .then(response => response.text())
         .then(html => {
+            console.log(`Component HTML received for ${componentName}`);
             document.getElementById('app').innerHTML = html;
+            console.log(`${componentName} component loaded`);
             if (componentName === 'login') {
                 document.getElementById('loginForm').addEventListener('submit', handleLogin);
             } else if (componentName === 'register') {
+                console.log('Register component loaded, attaching event listener');
                 document.getElementById('registerForm').addEventListener('submit', handleRegister);
             } else if (componentName === 'home') {
                 updateNavbar();
@@ -53,11 +63,15 @@ function loadComponent(componentName) {
                 updateNavbar();
                 fetchUserProfile();
             }
+        })
+        .catch(error => {
+            console.error(`Error loading ${componentName} component:`, error);
         });
 }
 
 function handleLogin(e) {
     e.preventDefault();
+    console.log('Login form submitted');
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
 
@@ -87,10 +101,13 @@ function handleLogin(e) {
 
 function handleRegister(e) {
     e.preventDefault();
+    console.log('Register form submitted');
     const username = document.getElementById('registerUsername').value;
     const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+    console.log('Form data:', { username, email, password, confirmPassword });
 
     if (password !== confirmPassword) {
         showMessage('Passwords do not match!', 'error');
@@ -106,6 +123,7 @@ function handleRegister(e) {
     })
     .then(response => response.json().then(data => ({ status: response.status, body: data })))
     .then(({ status, body }) => {
+        console.log('Register response:', { status, body });
         if (status === 201 && body.token) {
             localStorage.setItem('token', body.token);
             localStorage.setItem('username', username);
@@ -196,6 +214,7 @@ function updateNavbar() {
 }
 
 function showMessage(message, type) {
+    console.log(`Showing message: ${message} (${type})`);
     const messageElement = document.createElement('div');
     messageElement.textContent = message;
     messageElement.className = `message ${type}`;

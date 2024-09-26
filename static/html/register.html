@@ -1,23 +1,18 @@
-<div id="register-form" class="form-container">
-    <h2>Register</h2>
-    <form id="registerForm">
-      <div class="form-group">
-        <label for="registerUsername">Username:</label>
-        <input type="text" id="registerUsername" name="username" required>
-      </div>
-      <div class="form-group">
-        <label for="registerEmail">Email:</label>
-        <input type="email" id="registerEmail" name="email" required>
-      </div>
-      <div class="form-group">
-        <label for="registerPassword">Password:</label>
-        <input type="password" id="registerPassword" name="password" required>
-      </div>
-      <div class="form-group">
-        <label for="registerConfirmPassword">Confirm Password:</label>
-        <input type="password" id="registerConfirmPassword" name="confirmPassword" required>
-      </div>
-      <button type="submit">Register</button>
-    </form>
-    <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
-  </div>
+<div id="register">
+  <h2>Register</h2>
+  <form id="registerForm" onsubmit="console.log('Form onsubmit triggered'); return false;">
+      <input type="text" id="registerUsername" placeholder="Username" required>
+      <input type="email" id="registerEmail" placeholder="Email" required>
+      <input type="password" id="registerPassword" placeholder="Password" required>
+      <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" required>
+      <button type="submit" onclick="console.log('Register button clicked');">Register</button>
+  </form>
+  <p>Already have an account? <a href="/login" data-link>Login</a></p>
+</div>
+<script>
+  console.log('Register component script running');
+  document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      console.log('Form submit event listener triggered');
+  });
+</script>
